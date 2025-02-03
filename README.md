@@ -1,3 +1,5 @@
+注意: <br>
+此教程建立在openwrt已有passwall2并能正常运行(缺少依赖需自行安装),并且使用apk包管理器。<br>
 同步编译passwall2的.apk包，适用于使用apk包管理器的openwrt；<br>
 源码均来自[xiaorouji/openwrt-passwall2](https://github.com/xiaorouji/openwrt-passwall2)；<br>
 比较更改[workflows/Auto compile with openwrt sdk.yml](https://github.com/xiaorouji/openwrt-passwall2/compare/main...yoier:openwrt-passwall2:main?diff=split&w=#diff-2f9f24d66bc665142e414c96f7dd53791b18945862668bfbb225ab89f80b38bc)。
