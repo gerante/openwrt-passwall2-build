@@ -7,7 +7,7 @@
 ## 脚本更新
 ### openwrt终端运行
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/yoier/openwrt-passwall2/refs/heads/main/upgrade_passwall2_apk.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/yoier/openwrt-passwall2-build/refs/heads/main/upgrade_passwall2_apk.sh)
 ```
 
 ## 手动更新
