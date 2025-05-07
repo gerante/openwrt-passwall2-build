@@ -4,6 +4,7 @@
 #
 permissions:
   actions: write
+  contents: write
 
 name: "Auto compile with openwrt sdk"
 on:
