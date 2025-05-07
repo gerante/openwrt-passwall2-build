@@ -4,7 +4,7 @@
 #
 permissions:
   actions: write
-  
+
 name: "Auto compile with openwrt sdk"
 on:
   repository_dispatch:
@@ -53,11 +53,11 @@ jobs:
       - name: Delete current workflow run
         if: steps.check_version.outputs.has_update == 'false'
         run: |
-          runs=$(gh api "repos/$REPO/actions/runs?per_page=100" \
+          runs=$(gh api "repos/${{env.REPO}}/actions/runs?per_page=100" \
             --jq '.workflow_runs[] | select((.run_started_at | fromdateiso8601) - (.created_at | fromdateiso8601) < 60) | .id')
           for run_id in $runs; do
             echo "Deleting run $run_id..."
-            gh api -X DELETE "repos/$REPO/actions/runs/$run_id"
+            gh api -X DELETE "repos/${{env.REPO}}/actions/runs/$run_id"
           done
         env:
           GH_TOKEN: ${{ secrets.GH_ADMIN_TOKEN }}
