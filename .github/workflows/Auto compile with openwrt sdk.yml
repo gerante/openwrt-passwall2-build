@@ -281,9 +281,9 @@ jobs:
           echo "Start applying the patch"
 
 
-          # echo "update golang version"
-          # rm -rf feeds/packages/lang/golang
-          # git clone https://github.com/sbwml/packages_lang_golang -b 24.x feeds/packages/lang/golang
+          echo "update golang version"
+          rm -rf feeds/packages/lang/golang
+          git clone https://github.com/sbwml/packages_lang_golang -b 24.x feeds/packages/lang/golang
 
           echo "fixed rust host build error"
           sed -i 's/--set=llvm\.download-ci-llvm=false/--set=llvm.download-ci-llvm=true/' feeds/packages/lang/rust/Makefile
@@ -323,7 +323,7 @@ jobs:
       - name: ${{ matrix.platform }} download
         run: |
           cd sdk
-          make download -j1
+          make download -j1 V=s
           find dl -size -1024c -exec ls -l {} \;
 
       - name: ${{ matrix.platform }} compile
