@@ -333,7 +333,7 @@ jobs:
           make package/feeds/passwall_packages/chinadns-ng/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/geoview/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/tcping/compile -j1 2>/dev/null
-          make package/feeds/passwall_packages/xray-core/compile -j1 2>/dev/null
+          make package/feeds/passwall_packages/xray-core/compile -j1 V=s
           make package/feeds/passwall_packages/v2ray-geodata/compile -j1 2>/dev/null
 
           make package/feeds/passwall_packages/hysteria/compile -j1 2>/dev/null
