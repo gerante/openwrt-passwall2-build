@@ -122,12 +122,12 @@ jobs:
           file_name=$(echo ${{ matrix.sdk_url }} | awk -F/ '{print $NF}')
           mkdir sdk && tar --zstd -xf $file_name -C ./sdk --strip-components=1
           cd sdk
-          echo "src-git base https://github.com/openwrt/openwrt.git;openwrt-${{ env.sdk_ver }}" > feeds.conf
-          echo "src-git packages https://github.com/openwrt/packages.git;openwrt-${{ env.sdk_ver }}" >> feeds.conf
-          echo "src-git luci https://github.com/openwrt/luci.git;openwrt-${{ env.sdk_ver }}" >> feeds.conf
-          echo "src-git routing https://git.openwrt.org/feed/routing.git;openwrt-${{ env.sdk_ver }}"  >> feeds.conf
-          echo "src-git passwall_packages https://github.com/${{ env.packages }}.git;main" >> feeds.conf
-          echo "src-git passwall2 https://github.com/${{ env.passwall2 }}.git;main" >> feeds.conf
+          echo "src-git base https://github.com/openwrt/openwrt.git;openwrt-${{ env.sdk_ver }}" > feeds.conf.default
+          echo "src-git packages https://github.com/openwrt/packages.git;openwrt-${{ env.sdk_ver }}" >> feeds.conf.default
+          echo "src-git luci https://github.com/openwrt/luci.git;openwrt-${{ env.sdk_ver }}" >> feeds.conf.default
+          echo "src-git routing https://git.openwrt.org/feed/routing.git;openwrt-${{ env.sdk_ver }}"  >> feeds.conf.default
+          echo "src-git passwall_packages https://github.com/${{ env.packages }}.git;main" >> feeds.conf.default
+          echo "src-git passwall2 https://github.com/${{ env.passwall2 }}.git;main" >> feeds.conf.default
           ./scripts/feeds update -a
           echo "CONFIG_PACKAGE_luci-app-passwall2=m" > .config
           ./scripts/feeds install -d n luci-app-passwall2
@@ -266,12 +266,12 @@ jobs:
       - name: ${{ matrix.platform }} feeds configuration packages
         run: |
           cd sdk
-          echo "src-git base https://github.com/openwrt/openwrt.git;openwrt-${{ env.sdk_ver }}" > feeds.conf
-          echo "src-git packages https://github.com/openwrt/packages.git;openwrt-${{ env.sdk_ver }}" >> feeds.conf
-          echo "src-git luci https://github.com/openwrt/luci.git;openwrt-${{ env.sdk_ver }}" >> feeds.conf
-          echo "src-git routing https://git.openwrt.org/feed/routing.git;openwrt-${{ env.sdk_ver }}"  >> feeds.conf
-          echo "src-git passwall_packages https://github.com/${{ env.packages }}.git;main" >> feeds.conf
-          echo "src-git passwall2 https://github.com/${{ env.passwall2 }}.git;main" >> feeds.conf
+          echo "src-git base https://github.com/openwrt/openwrt.git;openwrt-${{ env.sdk_ver }}" > feeds.conf.default
+          echo "src-git packages https://github.com/openwrt/packages.git;openwrt-${{ env.sdk_ver }}" >> feeds.conf.default
+          echo "src-git luci https://github.com/openwrt/luci.git;openwrt-${{ env.sdk_ver }}" >> feeds.conf.default
+          echo "src-git routing https://git.openwrt.org/feed/routing.git;openwrt-${{ env.sdk_ver }}"  >> feeds.conf.default
+          echo "src-git passwall_packages https://github.com/${{ env.packages }}.git;main" >> feeds.conf.default
+          echo "src-git passwall2 https://github.com/${{ env.passwall2 }}.git;main" >> feeds.conf.default
 
           ./scripts/feeds update -a
           ./scripts/feeds install -a
@@ -299,7 +299,6 @@ jobs:
           echo "CONFIG_ALL=n" >> .config
           echo "CONFIG_AUTOREMOVE=n" >> .config
           echo "CONFIG_SIGNED_PACKAGES=n" >> .config
-          echo "CONFIG_PACKAGE_xray-core=y" >> .config
           echo "CONFIG_PACKAGE_luci-app-passwall2=m" >> .config
           echo "CONFIG_PACKAGE_luci-app-passwall2_Iptables_Transparent_Proxy=y" >> .config
           echo "CONFIG_PACKAGE_luci-app-passwall2_Nftables_Transparent_Proxy=y" >> .config
@@ -324,7 +323,7 @@ jobs:
       - name: ${{ matrix.platform }} download
         run: |
           cd sdk
-          make download -j1 V=s
+          make download -j1
           find dl -size -1024c -exec ls -l {} \;
 
       - name: ${{ matrix.platform }} compile
@@ -334,8 +333,9 @@ jobs:
           make package/feeds/passwall_packages/chinadns-ng/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/geoview/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/tcping/compile -j1 2>/dev/null
-          # make package/feeds/passwall_packages/xray-core/compile -j1 V=s
+          make package/feeds/passwall_packages/xray-core/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/v2ray-geodata/compile -j1 2>/dev/null
+
           make package/feeds/passwall_packages/hysteria/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/naiveproxy/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/shadowsocks-rust/compile -j1 2>/dev/null
