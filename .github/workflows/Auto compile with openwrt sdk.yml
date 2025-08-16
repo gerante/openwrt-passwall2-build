@@ -299,6 +299,7 @@ jobs:
           echo "CONFIG_ALL=n" >> .config
           echo "CONFIG_AUTOREMOVE=n" >> .config
           echo "CONFIG_SIGNED_PACKAGES=n" >> .config
+          echo "CONFIG_PACKAGE_xray-core=y" >> .config
           echo "CONFIG_PACKAGE_luci-app-passwall2=m" >> .config
           echo "CONFIG_PACKAGE_luci-app-passwall2_Iptables_Transparent_Proxy=y" >> .config
           echo "CONFIG_PACKAGE_luci-app-passwall2_Nftables_Transparent_Proxy=y" >> .config
@@ -335,7 +336,6 @@ jobs:
           make package/feeds/passwall_packages/tcping/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/xray-core/compile -j1 V=s
           make package/feeds/passwall_packages/v2ray-geodata/compile -j1 2>/dev/null
-
           make package/feeds/passwall_packages/hysteria/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/naiveproxy/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/shadowsocks-rust/compile -j1 2>/dev/null
