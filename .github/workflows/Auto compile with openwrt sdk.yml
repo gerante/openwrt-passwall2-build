@@ -27,7 +27,7 @@ env:
 jobs:
   job_check:
     name: Check Version
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       passwall2_version: ${{ steps.check_version.outputs.latest_version }}
       has_update: ${{ steps.check_version.outputs.has_update }}
@@ -89,7 +89,7 @@ jobs:
     name: Build passwall2 [Luci 24.10]
     needs: job_check
     if: needs.job_check.outputs.has_update == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -179,7 +179,7 @@ jobs:
   job_auto_compile:
     if: ${{ needs.job_check.outputs.has_update == 'true' && needs.job_check.outputs.prerelease == 'false' }}
     needs: job_check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: build (${{ matrix.platform }})
     strategy:
       fail-fast: false
@@ -245,10 +245,10 @@ jobs:
           if [ "$(docker images -q)" ]; then
             docker rmi $(docker images -q)
           fi
-          sudo -E rm -rf /usr/share/dotnet /etc/mysql /etc/php /usr/local/lib/android
+          sudo -E rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/apt/sources.list.d /usr/local/lib/android
           echo "install packages!!!!!!"
           sudo -E apt-get -qq update
-          sudo -E apt-get -qq install ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential bzip2 ccache clang cmake cpio curl device-tree-compiler ecj fastjar flex gawk gettext gcc-multilib g++-multilib git gnutls-dev gperf haveged help2man intltool lib32gcc-s1 libc6-dev-i386 libelf-dev libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses-dev libpython3-dev libreadline-dev libssl-dev libtool libyaml-dev libz-dev lld llvm lrzsz mkisofs msmtp nano ninja-build p7zip p7zip-full patch pkgconf python3 python3-pip python3-ply python3-docutils python3-pyelftools qemu-utils re2c rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev zstd
+          sudo -E apt-get -qq install flex bison g++ gawk git libncurses-dev libssl-dev python3-setuptools rsync swig unzip zlib1g-dev file wget zstd unzip
           sudo -E apt-get -qq autoremove --purge
           sudo -E apt-get -qq clean
 
@@ -272,27 +272,23 @@ jobs:
           echo "src-git routing https://git.openwrt.org/feed/routing.git;openwrt-${{ env.sdk_ver }}"  >> feeds.conf.default
           echo "src-git passwall_packages https://github.com/${{ env.packages }}.git;main" >> feeds.conf.default
           echo "src-git passwall2 https://github.com/${{ env.passwall2 }}.git;main" >> feeds.conf.default
-
           ./scripts/feeds update -a
-          ./scripts/feeds install -a
 
-
-          #--------------------------------------begin_patches------------------------------------------
-          echo "Start applying the patch"
-
-
-          echo "update golang version"
+          # fix some build error
+          git clone --depth=1 --branch master https://github.com/openwrt/packages.git tmp_packages
           rm -rf feeds/packages/lang/golang
-          git clone https://github.com/sbwml/packages_lang_golang -b 24.x feeds/packages/lang/golang
-
-          echo "fixed rust host build error"
+          rm -rf feeds/packages/libs/libsodium
+          rm -rf feeds/packages/lang/rust
+          mv tmp_packages/lang/golang feeds/packages/lang
+          mv tmp_packages/libs/libsodium feeds/packages/libs
+          mv tmp_packages/lang/rust feeds/packages/lang
+          rm -rf tmp_packages
           sed -i 's/--set=llvm\.download-ci-llvm=false/--set=llvm.download-ci-llvm=true/' feeds/packages/lang/rust/Makefile
           grep -q -- '--ci false \\' feeds/packages/lang/rust/Makefile || sed -i '/x\.py \\/a \        --ci false \\' feeds/packages/lang/rust/Makefile
+          # end
 
-
-          echo "Patch application completed"
-          #--------------------------------------end_patches--------------------------------------------
-          
+          ./scripts/feeds install -a
+          ./scripts/feeds install -a -f -p passwall_packages
           echo "CONFIG_ALL_NONSHARED=n" > .config
           echo "CONFIG_USE_APK=y" >> .config
           echo "CONFIG_ALL_KMODS=n" >> .config
@@ -316,7 +312,6 @@ jobs:
           echo "CONFIG_PACKAGE_luci-app-passwall2_INCLUDE_SingBox=y" >> .config
           echo "CONFIG_PACKAGE_luci-app-passwall2_INCLUDE_tuic_client=y" >> .config
           echo "CONFIG_PACKAGE_luci-app-passwall2_INCLUDE_V2ray_Plugin=y" >> .config
-
           make defconfig
 
 
@@ -335,7 +330,6 @@ jobs:
           make package/feeds/passwall_packages/tcping/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/xray-core/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/v2ray-geodata/compile -j1 2>/dev/null
-
           make package/feeds/passwall_packages/hysteria/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/naiveproxy/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/shadowsocks-rust/compile -j1 2>/dev/null
@@ -344,7 +338,6 @@ jobs:
           make package/feeds/passwall_packages/sing-box/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/tuic-client/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/v2ray-plugin/compile -j1 2>/dev/null
-
           echo "status=success" >> $GITHUB_OUTPUT
 
       - name: Organize ${{ matrix.platform }} files
@@ -353,9 +346,7 @@ jobs:
         run: |
           cd sdk
           mkdir upload
-
           zip -jr upload/passwall_packages_apk_${{ matrix.platform }}.zip bin/packages/*/passwall_packages/*.apk
-
           echo "FIRMWARE=$PWD" >> $GITHUB_ENV
           echo "status=success" >> $GITHUB_OUTPUT
 
