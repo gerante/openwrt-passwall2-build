@@ -287,8 +287,7 @@ jobs:
           grep -q -- '--ci false \\' feeds/packages/lang/rust/Makefile || sed -i '/x\.py \\/a \        --ci false \\' feeds/packages/lang/rust/Makefile
           # end
 
-          ./scripts/feeds install -a
-          ./scripts/feeds install -a -f -p passwall_packages
+          ./scripts/feeds install -a -f
           echo "CONFIG_ALL_NONSHARED=n" > .config
           echo "CONFIG_USE_APK=y" >> .config
           echo "CONFIG_ALL_KMODS=n" >> .config
