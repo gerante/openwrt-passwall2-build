@@ -275,8 +275,8 @@ jobs:
           mv tmp_packages/libs/libsodium feeds/packages/libs
           mv tmp_packages/lang/rust feeds/packages/lang
           rm -rf tmp_packages
-          ./scripts/feeds install -a
           ./scripts/feeds install -a -f -p passwall_packages
+          ./scripts/feeds install -a
           sed -i 's/--set=llvm\.download-ci-llvm=false/--set=llvm.download-ci-llvm=true/' feeds/packages/lang/rust/Makefile
           grep -q -- '--ci false \\' feeds/packages/lang/rust/Makefile || sed -i '/x\.py \\/a \        --ci false \\' feeds/packages/lang/rust/Makefile
           # end
@@ -304,6 +304,7 @@ jobs:
           echo "CONFIG_PACKAGE_luci-app-passwall2_INCLUDE_SingBox=y" >> .config
           echo "CONFIG_PACKAGE_luci-app-passwall2_INCLUDE_tuic_client=y" >> .config
           echo "CONFIG_PACKAGE_luci-app-passwall2_INCLUDE_V2ray_Plugin=y" >> .config
+          
           make defconfig
 
 
@@ -320,7 +321,7 @@ jobs:
           make package/feeds/passwall_packages/chinadns-ng/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/geoview/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/tcping/compile -j1 2>/dev/null
-          make package/feeds/passwall_packages/xray-core/compile -j1 2>/dev/null
+          make package/feeds/passwall_packages/xray-core/compile -j1 V=s
           make package/feeds/passwall_packages/v2ray-geodata/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/hysteria/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/naiveproxy/compile -j1 2>/dev/null
