@@ -21,7 +21,7 @@ env:
   TZ: Asia/Shanghai
   passwall2: xiaorouji/openwrt-passwall2
   packages: xiaorouji/openwrt-passwall-packages
-  sdk_ver: main
+  sdk_ver: master
 
 
 jobs:
@@ -40,7 +40,7 @@ jobs:
           url_tags: https://api.github.com/repos/${{ github.repository }}/tags
           url_lastest_version: https://raw.githubusercontent.com/${{ env.passwall2 }}/refs/heads/main/luci-app-passwall2/Makefile
         run: |
-          latest_version=$(wget -qO- -t1 -T2 ${{env.url_lastest_version}} | awk -F ':=' '/PKG_VERSION|PKG_RELEASE/ {print $2}' | sed ':a;N;s/\$(PKG_VERSION)-//;s/\n$//;s/\n/-/;ba')
+          latest_version=$(wget -qO- -t1 -T2 ${{env.url_lastest_version}} | awk -F ':=' '/PKG_VERSION|PKG_RELEASE/ {print $2}' | sed ':a;N;s/\$(PKG_VERSION)//;s/\n$//;s/\n/-/;ba')
           has_update=$([ -z "$(wget -qO- -t1 -T2 ${{env.url_tags}} | grep \"${latest_version}\")" ] && echo true || echo false)
           prerelease=false
           echo "latest_version=${latest_version}" >> $GITHUB_OUTPUT
@@ -127,10 +127,10 @@ jobs:
         id: compile
         run: |
           cd sdk
-          echo "src-git base https://github.com/openwrt/openwrt.git;${{ env.sdk_ver }}" > feeds.conf.default
-          echo "src-git packages https://github.com/openwrt/packages.git;${{ env.sdk_ver }}" >> feeds.conf.default
-          echo "src-git luci https://github.com/openwrt/luci.git;${{ env.sdk_ver }}" >> feeds.conf.default
-          echo "src-git routing https://git.openwrt.org/feed/routing.git;${{ env.sdk_ver }}"  >> feeds.conf.default
+          # echo "src-git base https://github.com/openwrt/openwrt.git;${{ env.sdk_ver }}" > feeds.conf.default
+          # echo "src-git packages https://github.com/openwrt/packages.git;${{ env.sdk_ver }}" >> feeds.conf.default
+          # echo "src-git luci https://github.com/openwrt/luci.git;${{ env.sdk_ver }}" >> feeds.conf.default
+          # echo "src-git routing https://git.openwrt.org/feed/routing.git;${{ env.sdk_ver }}"  >> feeds.conf.default
           echo "src-git passwall_packages https://github.com/${{ env.packages }}.git;main" >> feeds.conf.default
           echo "src-git passwall2 https://github.com/${{ env.passwall2 }}.git;main" >> feeds.conf.default
           ./scripts/feeds update -a
@@ -258,25 +258,25 @@ jobs:
       - name: ${{ matrix.platform }} feeds configuration packages
         run: |
           cd sdk
-          echo "src-git base https://github.com/openwrt/openwrt.git;openwrt-${{ env.sdk_ver }}" > feeds.conf
-          echo "src-git packages https://github.com/openwrt/packages.git;openwrt-${{ env.sdk_ver }}" >> feeds.conf
-          echo "src-git luci https://github.com/openwrt/luci.git;openwrt-${{ env.sdk_ver }}" >> feeds.conf
-          echo "src-git routing https://git.openwrt.org/feed/routing.git;openwrt-${{ env.sdk_ver }}"  >> feeds.conf
+          # echo "src-git base https://github.com/openwrt/openwrt.git;openwrt-${{ env.sdk_ver }}" > feeds.conf
+          # echo "src-git packages https://github.com/openwrt/packages.git;openwrt-${{ env.sdk_ver }}" >> feeds.conf
+          # echo "src-git luci https://github.com/openwrt/luci.git;openwrt-${{ env.sdk_ver }}" >> feeds.conf
+          # echo "src-git routing https://git.openwrt.org/feed/routing.git;openwrt-${{ env.sdk_ver }}"  >> feeds.conf
           echo "src-git passwall_packages https://github.com/${{ env.packages }}.git;main" >> feeds.conf
           echo "src-git passwall2 https://github.com/${{ env.passwall2 }}.git;main" >> feeds.conf
           ./scripts/feeds update -a
 
           # fix some build error
-          git clone --depth=1 --branch master https://github.com/openwrt/packages.git tmp_packages
-          rm -rf feeds/packages/lang/golang
-          rm -rf feeds/packages/libs/libsodium
-          rm -rf feeds/packages/lang/rust
-          mv tmp_packages/lang/golang feeds/packages/lang
-          mv tmp_packages/libs/libsodium feeds/packages/libs
-          mv tmp_packages/lang/rust feeds/packages/lang
-          rm -rf tmp_packages
-          ./scripts/feeds install -a
-          ./scripts/feeds install -a -f -p passwall_packages
+          # git clone --depth=1 --branch master https://github.com/openwrt/packages.git tmp_packages
+          # rm -rf feeds/packages/lang/golang
+          # rm -rf feeds/packages/libs/libsodium
+          # rm -rf feeds/packages/lang/rust
+          # mv tmp_packages/lang/golang feeds/packages/lang
+          # mv tmp_packages/libs/libsodium feeds/packages/libs
+          # mv tmp_packages/lang/rust feeds/packages/lang
+          # rm -rf tmp_packages
+          # ./scripts/feeds install -a
+          # ./scripts/feeds install -a -f -p passwall_packages
           # end
           
           echo "CONFIG_ALL_NONSHARED=n" > .config
