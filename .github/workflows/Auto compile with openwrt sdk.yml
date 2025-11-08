@@ -275,8 +275,8 @@ jobs:
           # mv tmp_packages/libs/libsodium feeds/packages/libs
           # mv tmp_packages/lang/rust feeds/packages/lang
           # rm -rf tmp_packages
-          # ./scripts/feeds install -a
-          # ./scripts/feeds install -a -f -p passwall_packages
+          ./scripts/feeds install -a
+          ./scripts/feeds install -a -f -p passwall_packages
           # end
           
           echo "CONFIG_ALL_NONSHARED=n" > .config
