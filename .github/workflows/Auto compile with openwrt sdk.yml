@@ -127,10 +127,10 @@ jobs:
         id: compile
         run: |
           cd sdk
-          # echo "src-git base https://github.com/openwrt/openwrt.git;${{ env.sdk_ver }}" > feeds.conf.default
-          # echo "src-git packages https://github.com/openwrt/packages.git;${{ env.sdk_ver }}" >> feeds.conf.default
-          # echo "src-git luci https://github.com/openwrt/luci.git;${{ env.sdk_ver }}" >> feeds.conf.default
-          # echo "src-git routing https://git.openwrt.org/feed/routing.git;${{ env.sdk_ver }}"  >> feeds.conf.default
+          echo "src-git base https://github.com/openwrt/openwrt.git;${{ env.sdk_ver }}" > feeds.conf.default
+          echo "src-git packages https://github.com/openwrt/packages.git;${{ env.sdk_ver }}" >> feeds.conf.default
+          echo "src-git luci https://github.com/openwrt/luci.git;${{ env.sdk_ver }}" >> feeds.conf.default
+          echo "src-git routing https://git.openwrt.org/feed/routing.git;${{ env.sdk_ver }}"  >> feeds.conf.default
           echo "src-git passwall_packages https://github.com/${{ env.packages }}.git;main" >> feeds.conf.default
           echo "src-git passwall2 https://github.com/${{ env.passwall2 }}.git;main" >> feeds.conf.default
           ./scripts/feeds update -a
@@ -267,14 +267,14 @@ jobs:
           ./scripts/feeds update -a
 
           # fix some build error
-          # git clone --depth=1 --branch master https://github.com/openwrt/packages.git tmp_packages
-          # rm -rf feeds/packages/lang/golang
+          git clone --depth=1 --branch master https://github.com/openwrt/packages.git tmp_packages
+          rm -rf feeds/packages/lang/golang
           # rm -rf feeds/packages/libs/libsodium
           # rm -rf feeds/packages/lang/rust
-          # mv tmp_packages/lang/golang feeds/packages/lang
+          mv tmp_packages/lang/golang feeds/packages/lang
           # mv tmp_packages/libs/libsodium feeds/packages/libs
           # mv tmp_packages/lang/rust feeds/packages/lang
-          # rm -rf tmp_packages
+          rm -rf tmp_packages
           ./scripts/feeds install -a
           ./scripts/feeds install -a -f -p passwall_packages
           # end
@@ -316,7 +316,7 @@ jobs:
         run: |
           cd sdk
           make package/feeds/passwall_packages/chinadns-ng/compile -j1 2>/dev/null
-          make package/feeds/passwall_packages/geoview/compile -j1 2>/dev/null
+          make package/feeds/passwall_packages/geoview/compile -j1 V=s 2>/dev/null
           make package/feeds/passwall_packages/tcping/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/xray-core/compile -j1 2>/dev/null
           make package/feeds/passwall_packages/v2ray-geodata/compile -j1 2>/dev/null
