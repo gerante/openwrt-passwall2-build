@@ -1,8 +1,9 @@
 注意: <br>
-~~此教程建立在openwrt已有passwall2并能正常运行~~passwall2所需依赖的apk包已编译(缺少依赖需自行安装),并且使用apk包管理器。<br>
+~~此教程建立在openwrt已有passwall2并能正常运行passwall2所需依赖的apk包已编译(缺少依赖需自行安装),并且使用apk包管理器。<br>
 同步编译passwall2的.apk包，适用于使用apk包管理器的openwrt；<br>
 源码均来自[xiaorouji/openwrt-passwall2](https://github.com/xiaorouji/openwrt-passwall2)；<br>
-比较更改[workflows/Auto compile with openwrt sdk.yml](https://github.com/xiaorouji/openwrt-passwall2/compare/main...yoier:openwrt-passwall2:main?diff=split&w=#diff-2f9f24d66bc665142e414c96f7dd53791b18945862668bfbb225ab89f80b38bc)。
+比较更改[workflows/Auto compile with openwrt sdk.yml](https://github.com/xiaorouji/openwrt-passwall2/compare/main...yoier:openwrt-passwall2:main?diff=split&w=#diff-2f9f24d66bc665142e414c96f7dd53791b18945862668bfbb225ab89f80b38bc)。~~ <br>
+2025.11.23已暂停编译；源仓库自25.11.14-1起，已支持apk包
 
 ## 脚本更新
 ### openwrt终端运行
@@ -12,7 +13,7 @@ bash <(curl -Ls https://raw.githubusercontent.com/yoier/openwrt-passwall2-build/
 
 ## 手动更新
 ### 下载文件
-下载release中.apk文件，并保存到openwrt中.<br>
+下载[release](https://github.com/xiaorouji/openwrt-passwall2/releases)中.apk文件，并保存到openwrt中.<br>
 ### apk安装
 ```
 apk add <.apk you saved> --allow-untrusted
